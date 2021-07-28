@@ -1,0 +1,88 @@
+{% if section.settings.show_recommendations %}
+<div class="recommendations" id='{{ section.id }}'>
+  {% if section.settings.title_text != blank %}
+    <h2 style='color: {{section.settings.title_color}}' class="recommendations__title">{{section.settings.title_text}}</h2>
+  {% endif %}
+  {% if section.settings.subtitle_text != blank %}
+    <div style='color: {{section.settings.subtitle_color}}' class="recommendations__caption">{{section.settings.subtitle_text}}</div>
+  {% endif %}
+  
+  <div class="recommendations__list"></div>
+</div>
+{% endif %}
+
+<script>
+  fetch("/recommendations/products.json?product_id={{product.id}}&limit={{ section.settings.items_count }}")
+  .then(response => response.json())
+  .then(({ products }) => {
+    console.log(products);
+    if (products.length > 0) {
+      products.forEach(function(item){
+        var productEl = createRecommendationItem(item);
+        document.querySelector('.recommendations__list').insertAdjacentHTML('afterbegin', productEl);
+      })
+    } else {
+      document.querySelector('.recommendations').remove();
+    }
+  });
+
+  function createRecommendationItem(item) {
+    const productEl = `
+      <div class='recommendations__product'>
+        <a href='${item["url"]}' class='recommendations__product-image'>
+          <img src='${item["featured_image"]}'>
+        </a>
+        <a href='${item["featured_image"]}' class='recommendations__product-title'>${item["title"]}</a>
+      </div>
+    `;
+    return productEl;
+  }
+ </script>
+
+
+ {% schema %}
+{
+  "name": "Recommedations section",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_recommendations",
+      "label": "Show section",
+      "default": true
+    },
+    {
+      "type": "range",
+        "id": "items_count",
+        "min": 2,
+        "max": 8,
+        "step": 2,
+        "unit": "itm",
+        "label": "Items count to show",
+        "default": 4
+    },
+    {
+      "type": "text",
+      "id": "title_text",
+      "label": "Title text"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#000000"
+    },
+    {
+      "type": "text",
+      "id": "subtitle_text",
+      "label": "SubTitle text"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "SubTitle color",
+      "default": "#000000"
+    }
+  ]
+}
+{% endschema %}

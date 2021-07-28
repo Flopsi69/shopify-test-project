@@ -1,0 +1,80 @@
+<header class="header">
+  <div class="container header__container">
+    <button class="btn burger"><span></span><span></span><span></span></button>
+    <a href='#' class="logo header__logo">
+      <img src="{{ 'logo.png' | asset_url }}" alt="">
+    </a>
+    <div class="navbar header__navbar">
+      <div class="nav navbar__nav">
+        <div class="nav__close">
+          <svg width="26" height="25" viewBox="0 0 26 25" fill="#fff" xmlns="http://www.w3.org/2000/svg">
+            <line x1="1.35355" y1="0.646452" x2="25.3535" y2="24.6464"/>
+            <line x1="0.646447" y1="24.6464" x2="24.6464" y2="0.646442"/>
+          </svg>
+        </div>
+        <nav class='nav__list'>
+          {% for link in linklists.main-menu.links %}
+            <a class='nav__link {% if forloop.last %} nav__link_sale {% endif %}' href="{{ link.url }}">{{ link.title }}</a>
+          {% endfor %}
+        </nav>
+      </div>
+
+      <div class="navbar__control">
+        <a href='#' class="search navbar__search navbar__control-search">
+          <img src="{{ 'icon-search.svg' | asset_url }}" alt="">
+        </a>
+
+        <a href='#' class="basket navbar__basket navbar__control-basket">
+          <img src="{{ 'icon-basket.svg' | asset_url }}" alt="">
+          <span class="navbar__basket-count">{{ cart.item_count }}</span>
+        </a>
+
+        <div class="basket__side">
+          <div class="basket__header">
+            <div class="basket__header-title">Cart ({{ cart.item_count }} {{ cart.item_count | pluralize: 'Item', 'Items' }})</div>
+            <div class="basket__header-close">
+              <svg width="26" height="25" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="1.35355" y1="0.646452" x2="25.3535" y2="24.6464" stroke="#202020"/>
+                <line x1="0.646447" y1="24.6464" x2="24.6464" y2="0.646442" stroke="#202020"/>
+              </svg>
+            </div>
+          </div>
+          <div class="basket__body">
+            {% for line_item in cart.items %}
+              <div class="basket__product" data-variant-id='{{ line_item.variant_id }}'>
+                <a href='{{line_item.url}}' class="basket__product-image">
+                  <img src="{{line_item.image | product_img_url: 'small' }}">
+                </a>
+                <div class="basket__product-info">
+                  <a href='{{line_item.url}}' class="basket__product-title">{{ line_item.title }}</a>
+                  <div class="basket__product-summary">
+                    <div class="basket__product-price">{{ line_item.original_line_price | money}}</div>
+                    {% comment %} <div class="basket__product-old"></div> {% endcomment %}
+                  </div>
+                  <div class="product__quantity product__control-quantity">
+                    <button class="product__quantity-btn product__quantity-minus">-</button>
+                    <input class="product__quantity-input basket__product-quantity" type="text" name="quantity" min="1" value="{{line_item.quantity}}">
+                    <button class="product__quantity-btn product__quantity-plus">+</button>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          <div class="basket__footer">
+            <div class="basket__subtotal">
+              <div class="basket__subtotal-caption">Subtotal</div>
+              <div class="basket__subtotal-price">{{ cart.total_price | money }}</div>
+            </div>
+          
+            <div class="basket__buttons">
+              <button class="btn btn_white basket__buttons-cart">View cart</button>
+              <button class="btn btn_red basket__buttons-checkout">Proceed to checkout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+  
